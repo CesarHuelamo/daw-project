@@ -1,0 +1,17 @@
+cosas por hacer en el proyecto;
+
+-fix preguntas eval()
+
+-join room: styles + animations.
+
+-sonidos de conect, disconect, acierto y fallo.
+
+-estilos final() y contador de tiempo hasta siguiente partida/
+
+-funcion para detener el movimiento de la sala una vez se queda vacia
+
+-funcion para resetear una partida.
+
+-crear mas preguntas.
+
+-trasladar las preguntas a DB.

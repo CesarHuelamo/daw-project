@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>{{ title }}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+    <header>
+        <h1>Javasquizz</h1>
+        <h3>Sala <span id="sala"></span></h3>
+    </header>
+    <main>
+        <aside>
+            <h3>Jugadores</h3>
+            <ul></ul>
+        </aside>
+        <section>
+            <span id="timer"></span>
+            <p id="pregunta"></p>
+        </section>
+        <section>
+            <div id="chat"></div>
+        </section>
+    </main>
+
+    <form id="message-form">
+        <input type="text" name="message" />
+        <button>Send</button>
+    </form>
+
+
+    <script src="socket.io/socket.io.js"></script>
+    <script src="/js/libs/jquery-3.3.1.min.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

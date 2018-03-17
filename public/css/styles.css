@@ -1,0 +1,43 @@
+body, div, form, input, label, h3{
+    margin: 0 auto;
+    padding: 0;
+    box-sizing: border-box;
+    display: block;
+    text-align: center;
+}
+body{
+    background-image: linear-gradient(45deg, #000428, #004e92);
+    padding-top: 10%;
+    width: 100vw;
+    height: 100vh;
+}
+.centered-form{
+    width: 20em;
+    height: 20em;
+    border: thin solid #fff;
+    color: #fff;
+    border-radius: 1em;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+}
+h3{
+    font-family: 'Kaushan Script', cursive;
+    letter-spacing: 5px;
+    font-size: 1.6em;
+}
+.form-field{
+    font-family: 'Fira Sans', sans-serif;
+}
+input{
+    margin-top: 10px;
+    border-radius: 6px;
+    padding: 5px 1em;
+}
+input[type="submit"]    {display: none;}
+#entrar{
+    border: 2px solid #fff;
+    padding: 8px 2em;
+    border-radius: 1em;
+}
+/* font-family: 'Fira Sans', sans-serif; */
