@@ -34,6 +34,7 @@ function tenRandomNumbers(){
 }
 
 app.post('/', (request, response) => {
+	console.log(request.body.pregunta3);
     room = request.body.room;
     user = request.body.user;
     if(!rooms[room]){

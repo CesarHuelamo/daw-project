@@ -33,8 +33,12 @@
 <script>
     'use strict';
     document.getElementById('entrar').addEventListener('click', () => {
-        document.forms[0].submit();
+        let data = new FormData(document.forms[0]);
+        let asd = new XMLHttpRequest();
+        asd.open('POST', '/');
+        asd.send(data);
     }, false);
+
 </script>
 </body>
 </html>

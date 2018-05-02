@@ -21,7 +21,10 @@
             <ul></ul>
         </aside>
         <section>
-            <div>La partida empieza en...<br/> <span id="starting"></span></div>
+            <div>La partida empieza en...<br/> 
+                <span id="starting"></span>
+                <h2 class="finalScoreTitle" style="display: none">Puntuación final</h2>
+            </div>
             <div id="info">
                 <p>Tiempo restante: <span id="timer"></span></p>
                 <div id="pregunta"></div>
@@ -33,7 +36,10 @@
             </form>
         </section>
     </main>
-
+    <audio src="correct.mp3" id="correct" style="display: none"></audio>
+    <audio src="connected.wav" id="connected" style="display: none"></audio>
+    <audio src="disconnected.wav" id="disconnected" style="display: none"></audio>
+    <audio src="userJoin.wav" id="userJoin" style="display: none"></audio>
     <script src="socket.io/socket.io.js"></script>
     <script src="/js/libs/jquery-3.3.1.min.js"></script>
     <script src="js/main.js"></script>

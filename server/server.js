@@ -81,12 +81,14 @@ io.on('connection', (socket) => {
     if(!rooms[room].start){
         rooms[room].interval = setInterval(() => {rooms[room].timer--}, 1000);
         io.sockets.in(room).emit('starting', rooms[room].timer);
-        newQuestion(room);      // provisional
-        rooms[room].start = true;  //provisional
-        // rooms[room].timeout = setTimeout(() => {
-        //     newQuestion(room);
-        //     rooms[room].start = true;
-        // } ,60000);
+        // newQuestion(room);      // provisional
+        // rooms[room].start = true;  //provisional
+        rooms[room].timeout = setTimeout(() => {
+            newQuestion(room);
+            rooms[room].start = true;
+        } ,60000);
+    } else if(rooms[room].start === 'finished') {
+        socket.emit('final', {timer: rooms[room].timer, score: rooms[room].users});
     } else {
         socket.emit('question', rooms[room].currentQuestion);
         socket.emit('timer', rooms[room].timer);
@@ -133,16 +135,27 @@ io.on('connection', (socket) => {
 
     socket.on('exit', (data) => {
         delete rooms[data.room].users[data.user];
+        console.log(rooms);
+
+        if(Object.keys(rooms[data.room].users).length === 0){
+            clearInterval(rooms[data.room].interval);
+            clearTimeout(rooms[data.room].timeout);
+            delete rooms[data.room];
+        } 
         io.sockets.in(data.room).emit('playerExit', data.user);
+        console.log(rooms);
     });
 });
 function newQuestion(room){ //send questions to a room
-    console.log(rooms[room].users);
+    console.log(rooms[room].users, rooms[room].timer);
     clearInterval(rooms[room].interval);
     clearTimeout(rooms[room].timeout);
     rooms[room].timer = 60;
     io.sockets.in(room).emit('timer', rooms[room].timer);
-    rooms[room].interval = setInterval(() => {rooms[room].timer--}, 1000);
+    rooms[room].interval = setInterval(() => {
+        if(rooms[room].timer <= 0) return;
+        rooms[room].timer--;
+    }, 1000);
     rooms[room].timeout = setTimeout(() => {newQuestion(room)} ,63000);
     rooms[room].responses = 0;
     if(rooms[room].questions.length == 0){
@@ -155,13 +168,22 @@ function newQuestion(room){ //send questions to a room
 }
 
 function final(room){
-    io.sockets.in(room).emit('final', rooms[room].users);
-    rooms[room].start = false;
+    rooms[room].start = 'finished';
     rooms[room].questions = questions.slice();
+    rooms[room].timer = 60;
+    io.sockets.in(room).emit('final', {timer: rooms[room].timer, score: rooms[room].users});
+    clearInterval(rooms[room].interval);
+    rooms[room].interval = setInterval(() => {
+        if(rooms[room].timer <= 0) return;
+        rooms[room].timer--
+    }, 1000);
     rooms[room].timeout = setTimeout(() => {
-            newQuestion(room);
-            rooms[room].start = true;
-        } ,60000);
+        Object.keys(rooms[room].users).forEach((v) => {
+            rooms[room].users[v] = 0;
+        });
+        newQuestion(room);
+        rooms[room].start = true;
+    } ,60000);
 }
 server.listen(port, () =>{console.log('server up in port '+port);});
 
