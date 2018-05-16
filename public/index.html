@@ -9,25 +9,27 @@
     <link href="https://fonts.googleapis.com/css?family=Kaushan+Script" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Fira+Sans" rel="stylesheet">
     <link type="text/css" rel="stylesheet" href="css/styles.css">
+    <script src="js/axios.min.js"></script>
 </head>
 <body>
-    <form action="/" method="POST">
+    <form action="/login" method="POST">
     <div class="centered-form">
 
         <h3>Javascript duel</h3>
         <div class="form-field">
-            <label for="name">Introduce tu usuario
-                <input name="user" type="text" autocomplete="off" required />
+            <label for="room">Email
+                <input type="text" name="email" autocomplete="off" required />
             </label>
         </div>
         <div class="form-field">
-            <label for="room">Nombre de la sala
-                <input type="text" name="room" autocomplete="off" required />
+            <label for="room">Contraseña
+                <input type="password" name="password" autocomplete="off" required />
             </label>
         </div>
         <div id="entrar" class="form-field">
             <input type="submit">Entrar
         </div>
+        <a href="/users">Registrate</a>
     </div>
 </form>
 <script>

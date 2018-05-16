@@ -3,7 +3,14 @@ const http = require('http');
 const express = require('express');
 const bodyParser = require('body-parser');
 const socketIO = require('socket.io');
+const _ = require('lodash');
 const {generateMessage}  = require('./utils/message');
+const {mongoose} = require('./db/mongoose.js');
+const {User} = require('./models/user.js');
+const jwt = require('jsonwebtoken');
+const session = require('express-session');
+const cookieParser = require('cookie-parser');
+const SHA256 = require('crypto-js/sha256');
 
 const publicPath = path.join(__dirname, '/../public');
 let app = express();
@@ -13,6 +20,22 @@ app.use(express.static(publicPath));
 app.set('view engine', 'html');
 app.use(bodyParser.urlencoded({extended: true})); //setup to parse the post information
 app.use(bodyParser.json());
+app.use(cookieParser());
+app.use(session({
+    secret: 'layla',
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+        expires: 6000000000,
+        userid: null
+    }
+}));
+app.use((request, response, next) => {
+    if(request.session.user){
+        response.redirect('/join-room');
+    }
+    next();
+});
 const port = process.env.PORT || 8080; 
 
 let users = {};
@@ -38,7 +61,55 @@ function tenRandomNumbers(){
     return numbers;
 }
 
-app.post('/', (request, response) => {
+let sessionChecker = (request, response, next) =>{ 
+    if(request.session.user){
+        response.redirect('/join-room');
+    }
+    console.log(request.session);
+    next();
+}
+// app.use(sessionChecker());
+
+app.post('/users', (request, response) =>  {
+    let body = _.pick(request.body, ['email', 'password', 'user']);
+    body.password = SHA256(body.password + 'layla');
+    let user = new User(body);
+    console.log(user);
+    user.save().then(() => {
+        return user.generateAuthToken();
+    }).catch(error => {
+        response.status(400).send(error);
+    });
+});
+
+app.post('/login', (request, response) => {
+    let body = _.pick(request.body,['email', 'password']);
+    // console.log(body);
+    body.password = SHA256(body.password + 'layla').toString();
+    // console.log(body);
+    User.findOne(body).then(user => {
+        if(user){
+            request.session.user = user.nick;
+            response.redirect('/join-room');
+        } else {
+            response.send(false);
+        }
+    }).catch(error => console.log(error));
+});
+
+app.get('/users', sessionChecker, (request, response) => {
+    response.sendFile(publicPath+'/sign-in.html');
+});
+
+app.get('/join-room', (request, response) => {
+    response.sendFile(publicPath+'/join-room.html');
+});
+
+app.get('/', sessionChecker, (request, response) => {
+    response.sendFile(publicPath + '/index.html');
+});
+
+app.post('/rooms', (request, response) => {
     room = request.body.room;
     user = request.body.user;
     if(!rooms[room]){
