@@ -30,9 +30,6 @@ socket.on('start', (data) => {
     document.getElementById('sala').innerText = room;
     data.users.map((v) => {
         let player = document.createElement('li');
-        // player.appendChild(document.createElement('span'));
-        // player.appendChild(document.createTextNode(v));
-        // player.appendChild(document.createElement('span'));
         player.innerHTML = `<span>0</span><span>${v}</span><span>0</span>`;    
         player.id = v;
         player.firstElementChild.nextElementSibling.style.color = colors[v];
@@ -47,19 +44,12 @@ socket.on('starting', (data) => {
             document.getElementById('starting').innerText = i;
         }, (data - i) * 1000);
     }
-    // interval = setInterval(() => {
-    //     if(tiempo < 0) return;
-    //     document.getElementById('starting').innerText = tiempo--;
-    // }, 1000);
 });
 
 socket.on('newPlayer', (data) => {
     if(data.user == user) return;
     colors[data.user] = data.color;
     let player = document.createElement('li');
-    // player.appendChild(document.createElement('span'));
-    // player.appendChild(document.createTextNode(data));
-    // player.appendChild(document.createElement('span'));
     player.innerHTML = `<span>0</span><span>${data.user}</span><span>0</span>`;
     player.firstElementChild.nextElementSibling.style.color = colors[data.user];    
     player.id = data.user;
@@ -101,32 +91,12 @@ socket.on('newMessage', (data) => {
 
 document.forms[0].addEventListener('submit', (event) => {
     event.preventDefault();
-    // let value = $('[name=message]').val();
-    // let response;
-    // if (question.eval[0]){
-    //     try{
-    //         value = JSON.stringify(eval(question.eval[1]+value+question.eval[2]));
-    //     } catch(e){
-    //         value = null;
-    //     }
-    // }
-    // if(question.answer == value) response = true; else response = false;
-    // if(response){
     socket.emit('response', {
         room,
         user,
-        body: text.value,
+        body: text.value.trim().toLowerCase(),
         responded
     });
-    // text.disabled = true;
-    // responded = true;
-// } else{
-//     socket.emit('createMessage', {
-//         room,
-//         user,
-//         body: text.value
-//     });
-// }
 text.value = "";
 });
 

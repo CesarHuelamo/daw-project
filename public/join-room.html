@@ -14,10 +14,10 @@
     <form action="/rooms" method="POST">
     <div class="centered-form">
 
-        <h3>Javascript duel</h3>
+        <h3>JavasQuizz</h3>
         <div class="form-field">
             <label for="room">Nombre de la sala
-                <input type="text" name="room" autocomplete="off" required />
+                <input type="text" name="room" autoComplete="off" required />
             </label>
         </div>
         <div id="entrar" class="form-field">
@@ -25,15 +25,5 @@
         </div>
     </div>
 </form>
-<script>
-    'use strict';
-    document.getElementById('entrar').addEventListener('click', () => {
-        let data = new FormData(document.forms[0]);
-        let asd = new XMLHttpRequest();
-        asd.open('POST', '/');
-        asd.send(data);
-    }, false);
-
-</script>
 </body>
 </html>

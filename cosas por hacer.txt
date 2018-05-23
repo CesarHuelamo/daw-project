@@ -1,11 +1,5 @@
 cosas por hacer en el proyecto;
 
--fix preguntas eval()
-
--join room: styles + animations. maquetaciones varias.
+-controlar casos de error en login (usuario incorrecto, nick repetido etc.)
 
 -crear mas preguntas.
-
--trasladar las preguntas a DB.
-
--registro + login
