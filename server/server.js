@@ -6,7 +6,7 @@ const _ = require('lodash');
 const { mongoose } = require('./db/mongoose.js');
 const { User } = require('./models/user.js');
 const { Question } = require('./models/question.js');
-// const session = require('express-session');
+const session = require('express-session');
 const jwt = require('jsonwebtoken');
 const SHA256 = require('crypto-js/sha256');
 import { router, html } from './html';
@@ -18,17 +18,17 @@ app.use(express.static(publicPath));
 app.set('view engine', 'html');
 app.use(express.urlencoded({ extended: true })); //setup to parse the post information
 app.use(express.json());
-// app.use(
-// 	session({
-// 		secret: 'layla',
-// 		resave: false,
-// 		saveUninitialized: true,
-// 		cookie: {
-// 			expires: 6000000000,
-// 			userid: null
-// 		}
-// 	})
-// );
+app.use(
+	session({
+		secret: 'layla',
+		resave: false,
+		saveUninitialized: true,
+		cookie: {
+			expires: 6000000000,
+			userid: null
+		}
+	})
+);
 
 const port = process.env.PORT || 8080;
 
@@ -77,35 +77,33 @@ app.post('/session', (request, response) => {
 		});
 });
 app.get('*', (request, response) => {
-	response.redirect('/');
-	// console.log(request.session.user);
-	// if (
-	// 	!request.session.user &&
-	// 	(request.url !== '/sign-in' && request.url !== '/log-in')
-	// ) {
-	// 	response.redirect('/log-in');
-	// }
-	// if (
-	// 	request.session.user &&
-	// 	(request.url !== '/join-room' && request.url !== '/room')
-	// ) {
-	// 	response.redirect('/join-room');
-	// }
-	// const context = {};
-	// let serverRouter = html(router(request.url, context));
-	// response.write(serverRouter);
+	if (
+		!request.session.user &&
+		(request.url !== '/sign-in' && request.url !== '/log-in')
+	) {
+		response.redirect('/log-in');
+	}
+	if (
+		request.session.user &&
+		(request.url !== '/join-room' && request.url !== '/room')
+	) {
+		response.redirect('/join-room');
+	}
+	const context = {};
+	let serverRouter = html(router(request.url, context));
+	response.write(serverRouter);
 	response.end();
 });
 
 app.post('/users', (request, response) => {
 	let body = _.pick(request.body, ['email', 'password', 'nick']);
 	body.password = SHA256(body.password + 'layla');
-	body.token = jwt.sign(body, 'layla').toString();
+	// body.token = jwt.sign(body, 'layla').toString();
 	let user = new User(body);
 	user
 		.save()
 		.then(() => {
-			request.session = body.nick;
+			request.session.user = body.nick;
 			response.send('/join-room');
 		})
 		.catch(error => {
@@ -117,13 +115,15 @@ app.post('/login', (request, response) => {
 	let body = _.pick(request.body, ['email', 'password']);
 	// console.log(body);
 	body.password = SHA256(body.password + 'layla').toString();
-	// console.log(body);
+	console.log(body);
 	User.findOne(body)
 		.then(user => {
 			if (user) {
-				response.send({ nick: user.nick, token: user.token });
+				request.session.user = user.nick;
+				response.redirect('/join-room');
+				// response.send({ nick: user.nick, token: user.token });
 			} else {
-				response.end();
+				response.send(false);
 			}
 		})
 		.catch(error => console.log(error));
@@ -145,10 +145,10 @@ app.post('/rooms', (request, response) => {
 		};
 		// let numbers = tenRandomNumbers();
 		let numbers = [3, 2, 1];
-		Question.find().then(response => {
+		Question.find().then(question => {
 			numbers.forEach(v => {
-				console.log(response[v]);
-				rooms[room].questions.push(response[v]);
+				console.log(question[v]);
+				rooms[room].questions.push(question[v]);
 			});
 		});
 	}
@@ -161,7 +161,7 @@ app.post('/rooms', (request, response) => {
 
 	if (Object.keys(rooms[room].users).length < 10) {
 		rooms[room].users[user] = 0;
-		response.sendFile(publicPath + '/room.html');
+		response.redirect('/room');
 	} else response.sendFile(publicPath + '/sala-llena.html');
 
 	color = colors[Math.floor(Math.random() * 7)];

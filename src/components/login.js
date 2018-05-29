@@ -1,32 +1,10 @@
 import React from 'react';
-import axios from 'axios';
 import { Link } from 'react-router-dom';
 
 export default class Login extends React.Component {
-	_onSubmit(event) {
-		event.preventDefault();
-		let formdata = new FormData(document.forms[0]);
-		let data = {
-			email: formdata.get('email'),
-			password: formdata.get('password')
-		};
-		axios({
-			method: 'POST',
-			url: '/login',
-			data
-		})
-			.then(response => {
-				sessionStorage.setItem('nick', response.data.nick);
-				sessionStorage.setItem('token', response.data.token);
-				this.setState({ redirect: '/join-room' });
-			})
-			.catch(() => {
-				console.log('crash');
-			});
-	}
 	render() {
 		return (
-			<form onSubmit={this._onSubmit}>
+			<form method="POST" action="/login">
 				<div className="centered-form">
 					<h3>JavasQuizz</h3>
 					<div className="form-field">

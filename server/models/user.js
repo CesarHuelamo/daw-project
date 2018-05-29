@@ -24,12 +24,12 @@ var UserSchema = new mongoose.Schema({
 		type: String,
 		required: true,
 		minLength: 8
-	},
-	token: {
-		type: String,
-		required: true,
-		unique: true
 	}
+	// token: {
+	// 	type: String,
+	// 	required: true,
+	// 	unique: true
+	// }
 });
 
 let User = mongoose.model('User', UserSchema);
