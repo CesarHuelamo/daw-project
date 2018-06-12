@@ -1,0 +1,197 @@
+[
+	{
+		"index": 0,
+		"question": "resultado de typeof 1",
+		"answer": "number",
+		"eval": [false]
+	},
+
+	{
+		"index": 1,
+		"question": "resultado de typeof [1]",
+		"answer": "object",
+		"eval": [false]
+	},
+	{
+		"index": 6,
+		"question": "resultado de typeof undefined",
+		"answer": "undefined",
+		"eval": [false]
+	},
+
+	{
+		"index": 7,
+		"question": "resultado de typeof null",
+		"answer": "object",
+		"eval": [false]
+	},
+
+	{
+		"index": 2,
+		"question":
+			"Valor de la variable \"foo\" tras la sentencia <br /> foo = -1 ? 0 : 1;",
+		"answer": "0",
+		"eval": [false]
+	},
+	{
+		"index": 8,
+		"question":
+			"Valor de la variable \"foo\" tras la sentencia <br /> foo = null ? 0 : 1;",
+		"answer": "1",
+		"eval": [false]
+	},
+
+	{
+		"index": 9,
+		"question":
+			"Valor de la variable \"foo\" tras la sentencia <br /> foo = \"\" ? 0 : 1;",
+		"answer": "1",
+		"eval": [false]
+	},
+
+	{
+		"index": 10,
+		"question":
+			"Valor de la variable \"foo\" tras la sentencia <br /> foo = \"0\" ? 0 : 1;",
+		"answer": "0",
+		"eval": [false]
+	},
+
+	{
+		"index": 11,
+		"question":
+			"Valor de la variable \"foo\" tras la sentencia <br /> foo = 0 || \"bar\"",
+		"answer": "bar",
+		"eval": [false]
+	},
+
+	{
+		"index": 3,
+		"question":
+			"Que valor se reflejara en la consola tras las siguientes sentencias: <br/> var foo = 1; <br/> console.log(foo++);",
+		"answer": "1",
+		"eval": [false]
+	},
+
+	{
+		"index": 4,
+		"question": "resultado de [6,5,9,4,3,0,3, \"foo\"].filter(v => v < 3)",
+		"answer": "[0]",
+		"eval": [false]
+	},
+
+	{
+		"index": 5,
+		"question": "resultado de typeof \"Hola mundo!\"",
+		"answer": "string",
+		"eval": [false]
+	},
+
+	{
+		"index": 12,
+		"question": "resultado de [1,2,3,4,5,6,7,8,9].filter(v => v < 3)",
+		"answer": "[1, 2]",
+		"eval": [false]
+	},
+
+	{
+		"index": 13,
+		"question": "resultado de [1,2,3,4,5,6,7,8,9].find(v => v < 3)",
+		"answer": "1",
+		"eval": [false]
+	},
+
+	{
+		"index": 14,
+		"question": "resultado de typeof [1,2,3,4,5,6,7,8,9].find(v => v < 3)",
+		"answer": "number",
+		"eval": [false]
+	},
+
+	{
+		"index": 15,
+		"question": "resultado de typeof [1,2,3,4,5,6,7,8,9].filter(v => v === 3)",
+		"answer": "object",
+		"eval": [false]
+	},
+
+	{
+		"index": 16,
+		"question":
+			"resultado de typeof [1,2,3,4,5,6,7,8,9, 'foo'].find(v => v === \"foo\")",
+		"answer": "string",
+		"eval": [false]
+	},
+
+	{
+		"index": 17,
+		"question":
+			"resultado de [1,2,3,4,5,6,7,8,9, 'foo'].find(v => typeof v === \"string\")",
+		"answer": "[\"foo\"]",
+		"eval": [false]
+	},
+
+	{
+		"index": 18,
+		"question":
+			"Tras la sentencia foo = [1,2,3,4,5,6,7,8,9].reduce(acc,v => {bar: acc.bar+v}, {bar: 0}) <br/> cual es el valor de foo.bar",
+		"answer": "45",
+		"eval": [false]
+	},
+
+	{
+		"index": 19,
+		"question":
+			"Tras la sentencia foo = [1,2,3,4,5,6,7,8,9].map(item => item + 5) <br/> cual es el valor de foo[5]",
+		"answer": "11",
+		"eval": [false]
+	},
+
+	{
+		"index": 20,
+		"question":
+			"Dado este código: <div><span><div id=\"foo\"/></span></div> rellena el hueco para seleccionar el div con id=\"foo\" <br/> document.___('span div')[0]",
+		"answer": "queryselectorall",
+		"eval": [false]
+	},
+
+	{
+		"index": 21,
+		"question":
+			"Dado este código: <div><span><div id=\"foo\"/></span></div> rellena el hueco para seleccionar el div con id=\"foo\" <br/> document.___('span div')[0]",
+		"answer": "queryselectorall",
+		"eval": [false]
+	},
+
+	{
+		"index": 22,
+		"question":
+			"Dado este código: window.___.reload() rellena el hueco para recargar la ventana del navegador",
+		"answer": "location",
+		"eval": [false]
+	},
+
+	{
+		"index": 23,
+		"question":
+			"Rellena el hueco para eliminar los spacios a la cadena: \"    foo   \".___();",
+		"answer": "trim",
+		"eval": [false]
+	},
+
+	{
+		"index": 24,
+		"question":
+			"Rellena el hueco para introducir dos ceros al inicio de la cadena: \"25\".___(4, 0);",
+		"answer": "",
+		"eval": [false]
+	},
+
+	{
+		"index": 25,
+		"question":
+			"Rellena el hueco para introducir dos ceros al inicio de la cadena: \"25\".padStart(__, 0);",
+		"answer": "4",
+		"eval": [false]
+	}
+]

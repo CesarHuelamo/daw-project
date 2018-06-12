@@ -24,6 +24,11 @@ export default class Login extends React.Component {
 							/>
 						</label>
 					</div>
+					{this.props.location.pathname === '/incorrect' ? (
+						<div>Email o contraseña incorrectos</div>
+					) : (
+						''
+					)}
 					<div id="entrar" className="form-field">
 						<input type="submit" value="Entrar" />
 					</div>

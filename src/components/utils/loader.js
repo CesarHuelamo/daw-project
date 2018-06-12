@@ -30,7 +30,7 @@ export default class Loader extends React.Component {
 	render() {
 		if (this.state.redirect) return <Redirect to={this.state.redirect} />;
 		return (
-			<div class="loader loader1">
+			<div className="loader loader1">
 				<div>
 					<div>
 						<div>

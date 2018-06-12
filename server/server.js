@@ -7,10 +7,11 @@ const { mongoose } = require('./db/mongoose.js');
 const { User } = require('./models/user.js');
 const { Question } = require('./models/question.js');
 const session = require('express-session');
-const jwt = require('jsonwebtoken');
 const SHA256 = require('crypto-js/sha256');
 import { router, html } from './html';
 const publicPath = path.join(__dirname, '/../public');
+
+const port = process.env.PORT || 8080;
 let app = express();
 let server = http.createServer(app);
 let io = socketIO(server);
@@ -30,20 +31,7 @@ app.use(
 	})
 );
 
-const port = process.env.PORT || 8080;
-
-let users = {};
-const questions = [
-	{ question: 'typeof 12', answer: 'number', eval: [false] },
-	{ question: 'typeof "hola"', answer: 'string', eval: [false] },
-	{
-		question:
-			'Rellena el hueco con la función adecuada: <br/>[2,3]._______.((v,i,a) => {return v+2;}); <br/> resultado: [4,5]',
-		answer: '[4,5]',
-		eval: [true, '[2,3].', '((v) => {return v+2});']
-	},
-	{ question: 'typeof [12]', answer: 'object', eval: [false] }
-];
+// let users = {};
 const colors = [
 	'yellow',
 	'green',
@@ -67,25 +55,22 @@ function tenRandomNumbers() {
 	}
 	return numbers;
 }
-app.post('/session', (request, response) => {
-	User.findOne({ token: request.body.token })
-		.then(user => {
-			response.send({ nick: user.nick });
-		})
-		.catch(() => {
-			response.send(false);
-		});
-});
+
 app.get('*', (request, response) => {
 	if (
 		!request.session.user &&
-		(request.url !== '/sign-in' && request.url !== '/log-in')
+		(request.url !== '/sign-in' &&
+			request.url !== '/log-in' &&
+			request.url !== '/user-taken' &&
+			request.url !== '/incorrect')
 	) {
 		response.redirect('/log-in');
 	}
 	if (
 		request.session.user &&
-		(request.url !== '/join-room' && request.url !== '/room')
+		(request.url !== '/join-room' &&
+			request.url !== '/room' &&
+			request.url !== '/full-room')
 	) {
 		response.redirect('/join-room');
 	}
@@ -98,35 +83,32 @@ app.get('*', (request, response) => {
 app.post('/users', (request, response) => {
 	let body = _.pick(request.body, ['email', 'password', 'nick']);
 	body.password = SHA256(body.password + 'layla');
-	// body.token = jwt.sign(body, 'layla').toString();
 	let user = new User(body);
 	user
 		.save()
 		.then(() => {
 			request.session.user = body.nick;
-			response.send('/join-room');
+			response.redirect('/join-room');
 		})
-		.catch(error => {
-			response.status(400).send(error);
+		.catch(() => {
+			response.redirect('/user-taken');
 		});
 });
 
 app.post('/login', (request, response) => {
 	let body = _.pick(request.body, ['email', 'password']);
-	// console.log(body);
 	body.password = SHA256(body.password + 'layla').toString();
-	console.log(body);
+	// console.log(body);
 	User.findOne(body)
 		.then(user => {
 			if (user) {
 				request.session.user = user.nick;
 				response.redirect('/join-room');
-				// response.send({ nick: user.nick, token: user.token });
 			} else {
-				response.send(false);
+				response.redirect('/incorrect');
 			}
 		})
-		.catch(error => console.log(error));
+		.catch(error => response.send(error));
 });
 
 app.post('/rooms', (request, response) => {
@@ -143,18 +125,14 @@ app.post('/rooms', (request, response) => {
 			interval: null,
 			timeout: null
 		};
-		// let numbers = tenRandomNumbers();
-		let numbers = [3, 2, 1];
-		Question.find().then(question => {
-			numbers.forEach(v => {
-				console.log(question[v]);
-				rooms[room].questions.push(question[v]);
-			});
+		let numbers = tenRandomNumbers();
+		Question.find({ index: { $in: numbers } }).then(questionList => {
+			rooms[room].questions = questionList.slice();
 		});
 	}
 	for (let i = 0; i < 10; i++) {
 		if (rooms[room].users[user] > -1) {
-			console.log(user);
+			// console.log(user);
 			user = `${request.body.user}(${i})`;
 		}
 	}
@@ -162,13 +140,14 @@ app.post('/rooms', (request, response) => {
 	if (Object.keys(rooms[room].users).length < 10) {
 		rooms[room].users[user] = 0;
 		response.redirect('/room');
-	} else response.sendFile(publicPath + '/sala-llena.html');
+	} else response.redirect('/full-room');
 
 	color = colors[Math.floor(Math.random() * 7)];
 	userColors[user] = color;
 });
 
 io.on('connection', socket => {
+	// console.log('New user connected');
 	socket.join(room);
 	socket.emit('start', {
 		room,
@@ -184,12 +163,12 @@ io.on('connection', socket => {
 			rooms[room].timer--;
 		}, 1000);
 		io.sockets.in(room).emit('starting', rooms[room].timer);
-		newQuestion(room); // provisional
-		rooms[room].start = true; //provisional
-		// rooms[room].timeout = setTimeout(() => {
-		//     newQuestion(room);
-		//     rooms[room].start = true;
-		// } ,60000);
+		// rooms[room].start = true; //provisional
+		// newQuestion(room); // provisional
+		rooms[room].timeout = setTimeout(() => {
+			newQuestion(room);
+			rooms[room].start = true;
+		}, 60000);
 	} else if (rooms[room].start === 'finished') {
 		socket.emit('final', {
 			timer: rooms[room].timer,
@@ -199,8 +178,6 @@ io.on('connection', socket => {
 		socket.emit('question', rooms[room].currentQuestion);
 		socket.emit('timer', rooms[room].timer);
 	}
-
-	console.log('New user connected');
 
 	socket.on('response', data => {
 		let answer = data.body;
@@ -247,20 +224,18 @@ io.on('connection', socket => {
 
 	socket.on('exit', data => {
 		delete rooms[data.room].users[data.user];
-		console.log(rooms);
-
+		// console.log(rooms);
 		if (Object.keys(rooms[data.room].users).length === 0) {
 			clearInterval(rooms[data.room].interval);
 			clearTimeout(rooms[data.room].timeout);
-			delete rooms[data.room];
 		}
 		io.sockets.in(data.room).emit('playerExit', data.user);
-		console.log(rooms);
+		// console.log(rooms);
 	});
 });
 function newQuestion(room) {
 	//send questions to a room
-	console.log(rooms[room].users, rooms[room].timer);
+	// console.log(rooms[room].users, rooms[room].timer);
 	clearInterval(rooms[room].interval);
 	clearTimeout(rooms[room].timeout);
 	rooms[room].timer = 60;
@@ -273,7 +248,7 @@ function newQuestion(room) {
 		newQuestion(room);
 	}, 63000);
 	rooms[room].responses = 0;
-	if (rooms[room].questions.length == 0) {
+	if (rooms[room].questions.length === 0) {
 		final(room);
 	} else {
 		rooms[room].currentQuestion = rooms[room].questions.splice(0, 1)[0];
@@ -284,7 +259,10 @@ function newQuestion(room) {
 
 function final(room) {
 	rooms[room].start = 'finished';
-	rooms[room].questions = questions.slice();
+	let numbers = tenRandomNumbers();
+	Question.find({ index: { $in: numbers } }).then(questionList => {
+		rooms[room].questions = questionList.slice();
+	});
 	rooms[room].timer = 60;
 	io.sockets
 		.in(room)

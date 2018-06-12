@@ -1,0 +1,97 @@
+@import "constants";
+
+header {
+  font-family: $font1;
+  background: $gradient;
+  color: #eee;
+  text-align: center;
+  height: 10vh;
+}
+main {
+  display: flex;
+  align-items: stretch;
+  height: 90vh;
+  aside {
+    font-family: $font2;
+    font-size: 2em;
+    color: #eee;
+    height: 100%;
+    background-image: linear-gradient(
+      225deg,
+      rgb(49, 84, 129),
+      rgb(39, 107, 130)
+    );
+    flex-basis: 20%;
+    text-align: center;
+  }
+  ul {
+    list-style: none;
+    li {
+      margin-top: 1em;
+      display: flex;
+      justify-content: space-between;
+      > span {
+        color: #ccc;
+        font-size: 25px;
+        padding: 5px;
+        border-radius: 1.5em;
+        margin: 0 1em;
+        &:nth-child(2) {
+          background-color: transparent;
+        }
+      }
+    }
+  }
+  section {
+    font-family: "Fira Sans", sans-serif;
+    background-color: lightblue;
+    flex: 1;
+    position: relative;
+    > div {
+      ul {
+        font-family: $font2;
+        padding-left: 2em;
+        max-height: 12em;
+      }
+      &:first-child {
+        text-align: center;
+        font-size: 2.5em;
+        height: 100%;
+        width: 100%;
+        background-color: #eeeeee;
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        padding-top: 1em;
+      }
+      .finalScoreTitle {
+        font-size: 1.5em;
+      }
+    }
+    #info {
+      background-color: #eeeeee;
+      width: 98%;
+      border-radius: 1em;
+      height: 10%;
+      text-align: center;
+      margin: 1% auto 0;
+    }
+    #chat {
+      height: 80%;
+      background-color: #eeeeee;
+      width: 98%;
+      border-radius: 1em;
+      margin: 1% auto 0;
+    }
+    input {
+      width: 98%;
+      margin: 1% 1% 0;
+      border-radius: 0.5em;
+      padding: 0 5px;
+      outline: none;
+      &[type="submit"] {
+        display: none;
+      }
+    }
+  }
+}

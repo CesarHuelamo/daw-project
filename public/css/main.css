@@ -1,0 +1,134 @@
+header {
+  font-family: "Kaushan Script";
+  background: linear-gradient(45deg, #000428, #004e92);
+  color: #eee;
+  text-align: center;
+  height: 10vh; }
+
+main {
+  display: flex;
+  align-items: stretch;
+  height: 90vh; }
+  main aside {
+    font-family: "Fira Sans";
+    font-size: 2em;
+    color: #eee;
+    height: 100%;
+    background-image: linear-gradient(225deg, #315481, #276b82);
+    flex-basis: 20%;
+    text-align: center; }
+  main ul {
+    list-style: none; }
+    main ul li {
+      margin-top: 1em;
+      display: flex;
+      justify-content: space-between; }
+      main ul li > span {
+        color: #ccc;
+        font-size: 25px;
+        padding: 5px;
+        border-radius: 1.5em;
+        margin: 0 1em; }
+        main ul li > span:nth-child(2) {
+          background-color: transparent; }
+  main section {
+    font-family: "Fira Sans", sans-serif;
+    background-color: lightblue;
+    flex: 1;
+    position: relative; }
+    main section > div ul {
+      font-family: "Fira Sans";
+      padding-left: 2em;
+      max-height: 12em; }
+    main section > div:first-child {
+      text-align: center;
+      font-size: 2.5em;
+      height: 100%;
+      width: 100%;
+      background-color: #eeeeee;
+      position: absolute;
+      top: 0px;
+      left: 0px;
+      padding-top: 1em; }
+    main section > div .finalScoreTitle {
+      font-size: 1.5em; }
+    main section #info {
+      background-color: #eeeeee;
+      width: 98%;
+      border-radius: 1em;
+      height: 10%;
+      text-align: center;
+      margin: 1% auto 0; }
+    main section #chat {
+      height: 80%;
+      background-color: #eeeeee;
+      width: 98%;
+      border-radius: 1em;
+      margin: 1% auto 0; }
+    main section input {
+      width: 98%;
+      margin: 1% 1% 0;
+      border-radius: 0.5em;
+      padding: 0 5px;
+      outline: none; }
+      main section input[type="submit"] {
+        display: none; }
+
+.centered-form {
+  width: 20em;
+  height: 20em;
+  border: thin solid #fff;
+  color: #fff;
+  border-radius: 1em;
+  position: relative;
+  top: 20vh;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly; }
+  .centered-form h3 {
+    font-family: "Kaushan Script";
+    letter-spacing: 5px;
+    font-size: 1.6em; }
+  .centered-form input {
+    margin-top: 10px;
+    border-radius: 6px;
+    padding: 5px 1em;
+    outline: none; }
+    .centered-form input[type="submit"] {
+      color: #fff;
+      background: transparent;
+      border: 2px solid #fff;
+      padding: 8px 2em;
+      border-radius: 1em; }
+  .centered-form label {
+    display: flex;
+    flex-direction: column;
+    align-items: center; }
+
+body,
+div,
+form,
+input,
+label,
+h3,
+span,
+ul,
+li,
+h1,
+p,
+section,
+button,
+aside {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box; }
+
+body {
+  font-family: "Fira Sans";
+  background: linear-gradient(45deg, #000428, #004e92);
+  width: 100vw;
+  height: 100vh; }
+  body a {
+    color: #eee; }

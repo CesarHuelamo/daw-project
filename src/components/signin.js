@@ -29,6 +29,11 @@ export default class Signin extends React.Component {
 							/>
 						</label>
 					</div>
+					{this.props.location.pathname === '/user-taken' ? (
+						<div>El email introducido ya está en uso</div>
+					) : (
+						''
+					)}
 					<div id="entrar" className="form-field">
 						<input type="submit" value="Enviar" />
 					</div>

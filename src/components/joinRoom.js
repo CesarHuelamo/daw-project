@@ -6,6 +6,11 @@ export default class JoinRoom extends React.Component {
 			<form action="/rooms" method="POST">
 				<div className="centered-form">
 					<h3>JavasQuizz</h3>
+					{this.props.location.pathname === '/join-room' ? (
+						''
+					) : (
+						<div>Sala llena, elige otra por favor</div>
+					)}
 					<div className="form-field">
 						<label htmlFor="room">
 							Nombre de la sala

@@ -1,0 +1,31 @@
+@import "room";
+@import "preGame";
+
+body,
+div,
+form,
+input,
+label,
+h3,
+span,
+ul,
+li,
+h1,
+p,
+section,
+button,
+aside {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: $font2;
+  background: $gradient;
+  width: 100vw;
+  height: 100vh;
+  a {
+    color: #eee;
+  }
+}

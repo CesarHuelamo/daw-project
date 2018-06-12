@@ -1,7 +1,6 @@
 import React from 'react';
 import openSocket from 'socket.io-client';
 let interval;
-let timeout;
 let socket;
 export default class Room extends React.Component {
 	constructor(props) {
@@ -9,8 +8,10 @@ export default class Room extends React.Component {
 
 		this.state = {
 			chatContent: [],
-			gameStarted: false
+			gameStarted: false,
+			players: []
 		};
+		this.submit = this.submit.bind(this);
 		this.connected = React.createRef();
 		this.correct = React.createRef();
 		this.disconnected = React.createRef();
@@ -25,6 +26,12 @@ export default class Room extends React.Component {
 		const userJoin = this.userJoin.current;
 		const pregunta = this.pregunta.current;
 		socket = openSocket();
+		window.addEventListener('unload', () => {
+			socket.emit('exit', {
+				room: this.state.room,
+				user: this.state.user
+			});
+		});
 		socket.on('connect', () => {
 			connected.play();
 		});
@@ -63,17 +70,9 @@ export default class Room extends React.Component {
 				currentScore: 0,
 				totalScore: 0
 			});
+			this.setState({ players });
 			userJoin.play();
 		});
-
-		// socket.on('timeout', () => {
-		// 	if (!this.state.responded) {
-		// 		socket.emit('response', {
-		// 			room: this.state.room,
-		// 			user: this.state.user
-		// 		});
-		// 	}
-		// });
 
 		socket.on('timer', data => {
 			clearInterval(interval);
@@ -101,8 +100,12 @@ export default class Room extends React.Component {
 
 		socket.on('correct', data => {
 			let players = this.state.players.slice();
-			players[data.user].currentScore = data.questionScore.toString();
-			players[data.user].totalScore = data.totalScore.toString();
+			players.find(
+				player => player.nick === data.user
+			).currentScore = data.questionScore.toString();
+			players.find(
+				player => player.nick === data.user
+			).totalScore = data.totalScore.toString();
 			this.setState({ players });
 			if (data.user === this.state.user) {
 				this.setState({ responded: true });
@@ -128,12 +131,14 @@ export default class Room extends React.Component {
 
 		socket.on('final', data => {
 			//end of the game function
+			clearInterval(interval);
 			let players = this.state.players.slice();
 			players.sort((a, b) => {
 				//sort users by score
 				return b.totalScore[1] - a.totalScore[1];
 			});
 			this.setState({
+				gameStarted: false,
 				players,
 				finalScore: true
 			});
@@ -156,12 +161,6 @@ export default class Room extends React.Component {
 		});
 		message.value = '';
 	}
-	componentWillUnmount() {
-		socket.emit('exit', {
-			room: this.state.room,
-			user: this.state.user
-		});
-	}
 	render() {
 		return [
 			<header>
@@ -174,23 +173,35 @@ export default class Room extends React.Component {
 			<main>
 				<aside>
 					<h3>Jugadores</h3>
-					<ul />
+					<ul>
+						{this.state.players.map(player => (
+							<li>
+								<span style={{ color: player.color }}>{player.nick}</span>
+								<div>
+									<span style={{ fontSize: '0.8em' }}>{player.totalScore}</span>
+									<span style={{ margin: '0 0.5em', color: '#f44' }}>
+										{player.currentScore}
+									</span>
+								</div>
+							</li>
+						))}
+					</ul>
 				</aside>
 				<section>
 					<div style={{ display: this.state.gameStarted ? 'none' : 'block' }}>
 						La partida empieza en...<br />
 						<span>{this.state.startCountdown}</span>
 						<h2
-							class="finalScoreTitle"
+							className="finalScoreTitle"
 							style={{ display: this.state.finalScore ? 'block' : 'none' }}
 						>
 							Puntuación final
 						</h2>
 						<ul style={{ display: this.state.finalScore ? 'block' : 'none' }}>
-							{this.players.map((player, index) => {
+							{this.state.players.map((player, index) => {
 								return (
 									<li>
-										{index}º {player.nick}: {player.totalScore}
+										{index + 1}º {player.nick}: {player.totalScore}
 									</li>
 								);
 							})}
@@ -203,7 +214,7 @@ export default class Room extends React.Component {
 						<div id="pregunta" ref={this.pregunta} />
 					</div>
 					<div id="chat">{this.state.chatContent}</div>
-					<form id="message-form">
+					<form id="message-form" onSubmit={this.submit}>
 						<input
 							type="text"
 							name="message"
